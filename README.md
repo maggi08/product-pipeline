@@ -15,7 +15,7 @@ claude plugin install product-pipeline@magzhan
 
 Optional companions, used when installed and never required: `human-text` (stakeholder messages and briefs) and `stage-pipeline` (the app-side planning that reads the handoff).
 
-Restart Claude Code, then run `/product`. This is version 0.1.0. The plugin has 9 skills and 1 agent.
+Restart Claude Code, then run `/product`. This is version 0.1.1. The plugin has 9 skills and 1 agent.
 
 ## The flow
 

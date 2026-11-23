@@ -60,7 +60,7 @@ const defects = [
   ['validate: a ticket-shaped id fails', 'references/product-repo.md', (s) => `${s}\nSee ${KEY} for details.\n`, new RegExp(`references/product-repo\\.md:\\d+: ticket id .${KEY}.`)],
   ['validate: a link to a missing plugin file fails', SKILL, (s) => `${s}\nRead ${LINK} first.\n`, new RegExp(`${SKILL}:\\d+: link to a missing`)],
   ['validate: a README count off by one fails', 'README.md', (s) => s.replace(/The plugin has 9 skills and 1 agent/, 'The plugin has 10 skills and 1 agent'), /README\.md:\d+: says .10 skills., the plugin has 9/],
-  ['validate: a CHANGELOG top that differs from the version fails', 'CHANGELOG.md', (s) => s.replace('## 0.1.0', '## 0.1.1'), /CHANGELOG\.md: the top section is 0\.1\.1/],
+  ['validate: a CHANGELOG top that differs from the version fails', 'CHANGELOG.md', (s) => s.replace(/^## \d+\.\d+\.\d+/m, '## 9.9.9'), /CHANGELOG\.md: the top section is 9\.9\.9/],
   ['validate: a skill name that differs from its folder fails', SKILL, (s) => s.replace(/^name: product$/m, 'name: products'), new RegExp(`${SKILL}: name "products"`)],
   ['validate: a link into ~/.claude/skills fails', 'references/product-repo.md', (s) => `${s}\nSee ~/.claude/skills/x/SKILL.md\n`, /references\/product-repo\.md:\d+: link to ~\/\.claude/],
   ['validate: a ticket-shaped id in another script fails', 'scripts/doctor.mjs', () => `// see ${KEY}\n`, new RegExp(`scripts/doctor\\.mjs:\\d+: ticket id .${KEY}.`)],
@@ -308,7 +308,7 @@ for (const [name, path, fn, pattern] of defects) {
       r = doctor(repo(`| my svc | ${dir}/gone-svc | gh repo clone acme/billing |`), plugins)
       check('doctor: a service name with a space gets no command either', /service repo with an invalid name/.test(r.out) && !/clone\.mjs/.test(r.out), r.out)
       r = doctor(repo(`| payments | ${join(dir, 'payments-missing')} | gh repo clone acme/payments |`), plugins)
-      check('doctor: the clone.mjs line of a fix has every argument in POSIX single quotes', /\(after the user's yes: node '[^']*clone\.mjs' <product repo> 'payments' --yes\)/.test(r.out), r.out)
+      check('doctor: the clone.mjs line of a fix is a dry run with every argument in POSIX single quotes (the real product repo, no --yes to copy)', /\(dry run: node '[^']*clone\.mjs' '\/[^']*' 'payments' — it prints the exact command; after the user's yes to it, the same line with --yes\)/.test(r.out) && !/clone\.mjs'[^\n]*'payments' --yes/.test(r.out), r.out)
     }
     r = doctor(repo(`<!--\n## Service repos\n| Repo | Local path | Clone source |\n|---|---|---|\n| oldsvc | ${dir}/gone-old | gh repo clone acme/oldsvc |\n-->`), plugins)
     check('m-15: a Service repos table inside an HTML comment is not declared (doctor and clone.mjs read it the same way)', !/oldsvc/.test(r.out), r.out)

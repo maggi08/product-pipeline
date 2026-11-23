@@ -9,7 +9,8 @@
  *   never the raw cell; a cell that does not pass is an error that says why;
  * - PROJECT.md is read with bounds (a FIFO, a device or a file over 4 MB is an error); it holds no credential: a PASSWORD/TOKEN/SECRET/KEY-like `NAME=value` (by name segments, bare names included),
  *   `--password x` or a URI with a password is an error (the value is never printed);
- * - a service name that is not letters, digits, `_`, `.`, `-` gets no command in the fix; the clone.mjs line it prints has every argument in POSIX single quotes;
+ * - a service name that is not letters, digits, `_`, `.`, `-` gets no command in the fix; the clone.mjs line it prints is a dry run (no `--yes`, so copying it runs nothing),
+ *   with the real product repo path and every argument in POSIX single quotes;
  * - the data route's client and tunnel tool, as declared in PROJECT.md, are found on PATH. Only a lookup of the
  *   command name: nothing from PROJECT.md is executed, no connection is made;
  * - stage-pipeline and human-text are in ~/.claude/plugins/installed_plugins.json (missing: a warning);
@@ -159,7 +160,7 @@ if (!root) {
           : emptyish(path)
             ? `write the local path of ${name} into PROJECT.md, then clone it`
             : made.ok
-              ? `${made.text}  (after the user's yes: node ${shQuote(join(import.meta.dirname, 'clone.mjs'))} <product repo> ${shQuote(name)} --yes)`
+              ? `${made.text}  (dry run: node ${shQuote(join(import.meta.dirname, 'clone.mjs'))} ${shQuote(root)} ${shQuote(name)} — it prints the exact command; after the user's yes to it, the same line with --yes)`
               : `the Clone source or Local path of ${name} in PROJECT.md is refused (${made.reason}): correct the row, nothing was run`
       add('error', `service repo ${serviceNameOf(name) ? name : 'with an invalid name'}`, `not found locally${emptyish(path) ? ' (no path in PROJECT.md)' : `: ${dir}`}`, fix)
     }
