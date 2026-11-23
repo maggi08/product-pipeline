@@ -308,7 +308,7 @@ for (const [name, path, fn, pattern] of defects) {
       r = doctor(repo(`| my svc | ${dir}/gone-svc | gh repo clone acme/billing |`), plugins)
       check('doctor: a service name with a space gets no command either', /service repo with an invalid name/.test(r.out) && !/clone\.mjs/.test(r.out), r.out)
       r = doctor(repo(`| payments | ${join(dir, 'payments-missing')} | gh repo clone acme/payments |`), plugins)
-      check('doctor: the clone.mjs line of a fix has every argument in POSIX single quotes', /\(after the user's yes: node '[^']*clone\.mjs' <product repo> 'payments' --yes\)/.test(r.out), r.out)
+      check('doctor: the clone.mjs line of a fix is a dry run with every argument in POSIX single quotes (the real product repo, no --yes to copy)', /\(dry run: node '[^']*clone\.mjs' '\/[^']*' 'payments' — it prints the exact command; after the user's yes to it, the same line with --yes\)/.test(r.out) && !/clone\.mjs'[^\n]*'payments' --yes/.test(r.out), r.out)
     }
     r = doctor(repo(`<!--\n## Service repos\n| Repo | Local path | Clone source |\n|---|---|---|\n| oldsvc | ${dir}/gone-old | gh repo clone acme/oldsvc |\n-->`), plugins)
     check('m-15: a Service repos table inside an HTML comment is not declared (doctor and clone.mjs read it the same way)', !/oldsvc/.test(r.out), r.out)

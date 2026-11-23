@@ -1,5 +1,9 @@
 # Changelog — product-pipeline
 
+## 0.1.1 — 2026-11-23
+
+- `/product-doctor`: the fix line for a missing service repo is a dry run of `clone.mjs` with the real product repo path and no `--yes`, so copying it runs nothing; `--yes` comes only after the user's yes to the command the dry run prints. Before, the printed line carried `--yes` and an unquoted `<product repo>` placeholder.
+
 ## 0.1.0 — 2026-11-20
 
 First version: product work before code, from a stakeholder's ask to a handoff that stage-pipeline plans from. A repository of its own; the `magzhan` marketplace in claude-pipeline lists it by tag. The product files live in a product repo of their own, next to the app repos, never inside one.
